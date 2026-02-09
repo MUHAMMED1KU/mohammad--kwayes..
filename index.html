@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>🌙 التحدي الرمضاني العائلي</title>
+
+<style>
+body{
+  direction:rtl;
+  font-family:Tahoma;
+  background:#0f2027;
+  color:white;
+  text-align:center;
+}
+.box{
+  background:white;
+  color:black;
+  padding:15px;
+  margin:15px auto;
+  max-width:520px;
+  border-radius:12px;
+}
+input,button{
+  padding:8px;
+  margin:5px;
+}
+button{
+  background:#27ae60;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+.progress{
+  background:#ddd;
+  border-radius:20px;
+  overflow:hidden;
+  margin:5px 0;
+}
+.bar{
+  height:18px;
+  background:#27ae60;
+}
+.small{
+  font-size:13px;
+  color:#333;
+}
+.msg{
+  color:green;
+  margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌙 التحدي الرمضاني العائلي</h1>
+<p>🤍 لا تنسَ الدعاء لوالديك</p>
+
+<!-- تسجيل الدخول -->
+<div class="box">
+  <input id="name" placeholder="الاسم">
+  <input id="pass" type="password" placeholder="كلمة السر">
+  <br>
+  <button onclick="login()">دخول</button>
+</div>
+
+<!-- لوحة المستخدم -->
+<div id="panel" class="box" style="display:none">
+  <h3 id="welcome"></h3>
+
+  <b>📖 القرآن</b><br>
+  صفحات: <span id="pages">0</span> |
+  أجزاء: <span id="juz">0</span><br>
+  <button onclick="add('pages',1)">+ صفحة</button>
+  <button onclick="add('pages',5)">+ 5 صفحات</button>
+
+  <hr>
+
+  <b>🤲 الأذكار</b><br>
+  العدد: <span id="azkar">0</span><br>
+  <button onclick="add('azkar',10)">+10</button>
+
+  <hr>
+
+  <b>💰 الصدقة</b><br>
+  العدد: <span id="sadaqa">0</span><br>
+  <button onclick="add('sadaqa',1)">+ صدقة</button>
+
+  <p class="msg" id="msg"></p>
+</div>
+
+<!-- التحدي العائلي -->
+<div class="box">
+  <h3>🏁 التحدي العائلي – القرآن</h3>
+  <div id="list"></div>
+</div>
+
+<script>
+const users = {
+  "هيثم":   {pass:"1111",pages:0,azkar:0,sadaqa:0},
+  "مصطفى": {pass:"2222",pages:0,azkar:0,sadaqa:0},
+  "محمد":  {pass:"1234",pages:0,azkar:0,sadaqa:0},
+  "طلال":  {pass:"3333",pages:0,azkar:0,sadaqa:0},
+  "جودي":  {pass:"4444",pages:0,azkar:0,sadaqa:0},
+  "احمد":  {pass:"5555",pages:0,azkar:0,sadaqa:0},
+  "منال":  {pass:"6666",pages:0,azkar:0,sadaqa:0},
+  "مياس":  {pass:"7777",pages:0,azkar:0,sadaqa:0},
+  "عدنان": {pass:"8888",pages:0,azkar:0,sadaqa:0}
+};
+
+let currentUser = null;
+
+function login(){
+  const n = document.getElementById("name").value.trim();
+  const p = document.getElementById("pass").value;
+
+  if(!users[n]){
+    alert("الاسم غير موجود");
+    return;
+  }
+  if(users[n].pass !== p){
+    alert("كلمة السر غير صحيحة");
+    return;
+  }
+
+  currentUser = n;
+  document.getElementById("panel").style.display="block";
+  document.getElementById("welcome").innerText="أهلًا "+n;
+  updateUI();
+}
+
+function add(type,val){
+  users[currentUser][type]+=val;
+
+  const oldJuz = Math.floor((users[currentUser][type]-val)/20);
+  const newJuz = Math.floor(users[currentUser].pages/20);
+
+  document.getElementById("msg").innerText =
+    newJuz>oldJuz
+    ? "🎉 مبارك! أتممت جزءًا كاملًا، جعله الله نورًا لك"
+    : "🌸 تقبّل الله عملك";
+
+  updateUI();
+}
+
+function updateUI(){
+  const u = users[currentUser];
+  pages.innerText=u.pages;
+  juz.innerText=Math.floor(u.pages/20);
+  azkar.innerText=u.azkar;
+  sadaqa.innerText=u.sadaqa;
+  drawList();
+}
+
+function drawList(){
+  let h="";
+  for(let n in users){
+    const p=users[n].pages;
+    const percent=Math.min(p/604*100,100);
+    h+=`
+      <div class="small">${n}</div>
+      <div class="progress">
+        <div class="bar" style="width:${percent}%"></div>
+      </div>
+    `;
+  }
+  document.getElementById("list").innerHTML=h;
+}
+drawList();
+</script>
+
+</body>
+</html>
